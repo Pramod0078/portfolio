@@ -11,6 +11,7 @@ type Project = {
   id: string; number: string; name: string; category: string; description: string;
   image: string; imageAlt?: string; imageFrame?: "portrait"; screenshot?: boolean; color: string; tags: string[]; platforms: string[]; highlight: string;
   summary: string; features: string[]; stack: string[];
+  gallery?: { src: string; alt: string; caption: string; width: number; height: number }[];
 };
 
 const projects: Project[] = [
@@ -25,11 +26,11 @@ const projects: Project[] = [
   },
   {
     id: "livescore", number: "02", name: "LiveScorebyKickScore", category: "CLOSER TO THE GAME",
-    description: "Real-time scores. Real communities. 20K+ users.", image: "/assets/kickscore.png", color: "navy",
+    description: "Real-time scores. Real communities. 50k users.", image: "/assets/kickscore.png", color: "navy",
     imageAlt: "KickScore fantasy football screen showing a team lineup on the pitch beneath the Build Dream Team heading.", imageFrame: "portrait", screenshot: true,
-    tags: ["React Native", "Expo", "Firebase"], platforms: ["mobile", "web"], highlight: "20K+ ANDROID USERS",
+    tags: ["React Native", "Expo", "Firebase"], platforms: ["mobile", "web"], highlight: "50k ANDROID USERS",
     summary: "A live sports and entertainment app bringing football and basketball updates, personalised feeds, and fan communities together. Built as the sole developer.",
-    features: ["Shipped to 20K+ Android and 100+ iOS users, reaching the Android milestone organically with zero paid acquisition.", "Delivered real-time scores using optimised API polling and efficient Redux Toolkit state management.", "Built follow relationships, personalised feeds, and club-based communities.", "Implemented one-to-one, group, and club chat with Firebase and FCM notifications, plus Firebase Analytics and AdMob monetisation."],
+    features: ["Shipped to 50k Android and 100+ iOS users, reaching the Android milestone organically with zero paid acquisition.", "Delivered real-time scores using optimised API polling and efficient Redux Toolkit state management.", "Built follow relationships, personalised feeds, and club-based communities.", "Implemented one-to-one, group, and club chat with Firebase and FCM notifications, plus Firebase Analytics and AdMob monetisation."],
     stack: ["React Native", "Expo", "TypeScript", "Redux Toolkit", "Firebase", "AdMob"],
   },
   {
@@ -44,7 +45,8 @@ const projects: Project[] = [
   {
     id: "career", number: "04", name: "IIT Abu Dhabi Career Platform", category: "CONNECTING WHAT’S NEXT",
     description: "A shared space for careers, connections, and opportunity.", image: "/assets/iit-abu-dhabi.png", color: "blue",
-    imageAlt: "IIT Abu Dhabi career platform showing a support profile, job links, career tools, and suggested connections.", screenshot: true,
+    imageAlt: "IIT Abu Dhabi home feed showing an internship opportunity, profile completion, career tools, and suggested connections.", screenshot: true,
+    gallery: [{ src: "/assets/iit-abu-dhabi-profile.png", alt: "IIT Abu Dhabi support profile with follow and connect buttons, career tools, and suggested connections.", caption: "Profile and connections", width: 1744, height: 923 }],
     tags: ["Next.js", "TypeScript", "Firebase"], platforms: ["web"], highlight: "CAREERS · COMMUNITY · CONNECTIONS",
     summary: "A career and community platform connecting students, recruiters, and administrators. Contributed to the full-stack platform and its communication features.",
     features: ["Contributed to a full-stack career platform built with Next.js, React, and TypeScript.", "Implemented Firebase Realtime Database chat and FCM push notifications, sharing messaging patterns with the mobile apps.", "Integrated Firebase Auth with role-based access for students, recruiters, and admins.", "Used JWT session management to support authenticated platform experiences."],
@@ -109,7 +111,7 @@ function HeroVisual() {
         <div className="score-community"><div className="community-avatars"><i>J</i><i>A</i><i>R</i></div><span>Big game. Bigger conversations.<small>Join your club’s conversation →</small></span></div>
         <div className="score-bottom"><span><Globe2 size={15} /><small>Discover</small></span><span><Radio size={15} /><small>Live</small></span><span><Layers3 size={15} /><small>Clubs</small></span></div>
       </div>
-      <div className="float-badge users-badge"><span className="badge-icon"><Sparkles size={18} /></span><div><strong>20K+</strong><span>users and counting</span></div><span className="mini-chart">▂▃▅▆▇</span></div>
+      <div className="float-badge users-badge"><span className="badge-icon"><Sparkles size={18} /></span><div><strong>50k</strong><span>users and counting</span></div><span className="mini-chart">▂▃▅▆▇</span></div>
       <div className="float-badge platform-badge"><div className="platform-symbol"><Code2 size={17} /></div><div><strong>One codebase.</strong><span>Endless possibilities.</span></div></div>
       <span className="art-caption">A FEW PIXELS. A LOT OF POSSIBILITY.</span>
     </div>
@@ -138,7 +140,7 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
       <div className="dialog-inner">
         <button ref={closeRef} className="dialog-close icon-button" onClick={onClose} aria-label="Close project details"><X size={22} /></button>
         <div className={`dialog-image ${project.color}${project.screenshot ? " project-screenshot" : ""}`}><ProjectImage project={project} /></div>
-        <div className="dialog-copy"><span className="eyebrow">PROJECT {project.number} / {project.category}</span><h2 id="project-title">{project.name}</h2><p className="dialog-summary">{project.summary}</p><h3>What I worked on</h3><ul>{project.features.map(feature => <li key={feature}><Check size={16} /><span>{feature}</span></li>)}</ul><h3>Built with</h3><div className="tags">{project.stack.map(tag => <span key={tag}>{tag}</span>)}</div>{!project.screenshot && <p className="illustration-note">Interface illustrations are conceptual; project details are based on my production work.</p>}<a className="button button-dark" href={`mailto:pramodchakraworty618@gmail.com?subject=${encodeURIComponent(`Let’s talk about ${project.name}`)}`}>Let’s talk about this project<ArrowUpRight size={17} /></a></div>
+        <div className="dialog-copy"><span className="eyebrow">PROJECT {project.number} / {project.category}</span><h2 id="project-title">{project.name}</h2><p className="dialog-summary">{project.summary}</p><h3>What I worked on</h3><ul>{project.features.map(feature => <li key={feature}><Check size={16} /><span>{feature}</span></li>)}</ul><h3>Built with</h3><div className="tags">{project.stack.map(tag => <span key={tag}>{tag}</span>)}</div>{project.gallery && <div className="project-gallery">{project.gallery.map(image => <figure key={image.src}><img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" /><figcaption>{image.caption}</figcaption></figure>)}</div>}{!project.screenshot && <p className="illustration-note">Interface illustrations are conceptual; project details are based on my production work.</p>}<a className="button button-dark" href={`mailto:pramodchakraworty618@gmail.com?subject=${encodeURIComponent(`Let’s talk about ${project.name}`)}`}>Let’s talk about this project<ArrowUpRight size={17} /></a></div>
       </div>
     </dialog>
   );
@@ -253,7 +255,7 @@ export default function Home() {
           <div className="container experience-grid">
             <div className="experience-heading" data-reveal><span className="eyebrow"><span className="tiny-dot" />THE JOURNEY SO FAR / 04</span><h2>Learning.<br />Building.<br /><em>Shipping.</em></h2><p>Every release is a lesson.<br />Every challenge, a chance to grow.</p><a className="button button-outline-light" href="/Pramod_Chakraworty_Resume.pdf" download>Get the full résumé <ArrowDownToLine size={16} /></a></div>
             <div className="timeline">
-              <article className="timeline-item" data-reveal><div className="timeline-marker"><span /></div><div className="timeline-top"><span className="timeline-label">PROFESSIONAL EXPERIENCE</span><span className="experience-pill">1.6 years</span></div><h3>Software Developer</h3><p className="company">Ideal IT Techno Pvt. Ltd. <ArrowUpRight size={15} /></p><span className="timeline-location">Indore, India · On-site</span><p className="timeline-text">Building production apps with React Native & Next.js, taking ownership from the first architectural decision to release day.</p><ul className="experience-points"><li><ChevronRight size={15} />Shipped apps reaching 20K+ active users.</li><li><ChevronRight size={15} />Built offline readers, real-time chat, and streaming.</li><li><ChevronRight size={15} />Owned releases across four app stores.</li><li><ChevronRight size={15} />Led end-to-end delivery of 3 mobile apps concurrently.</li></ul><div className="tags dark-tags"><span>React Native</span><span>Next.js</span><span>TypeScript</span><span>Firebase</span></div></article>
+              <article className="timeline-item" data-reveal><div className="timeline-marker"><span /></div><div className="timeline-top"><span className="timeline-label">PROFESSIONAL EXPERIENCE</span><span className="experience-pill">1.6 years</span></div><h3>Software Developer</h3><p className="company">Ideal IT Techno Pvt. Ltd. <ArrowUpRight size={15} /></p><span className="timeline-location">Indore, India · On-site</span><p className="timeline-text">Building production apps with React Native & Next.js, taking ownership from the first architectural decision to release day.</p><ul className="experience-points"><li><ChevronRight size={15} />Shipped apps reaching 50k active users.</li><li><ChevronRight size={15} />Built offline readers, real-time chat, and streaming.</li><li><ChevronRight size={15} />Owned releases across four app stores.</li><li><ChevronRight size={15} />Led end-to-end delivery of 3 mobile apps concurrently.</li></ul><div className="tags dark-tags"><span>React Native</span><span>Next.js</span><span>TypeScript</span><span>Firebase</span></div></article>
               <article className="timeline-item education-item" data-reveal><div className="timeline-marker"><span /></div><div className="timeline-top"><span className="timeline-label">WHERE IT STARTED</span><span className="education-date">2019 — 2023</span></div><h3>B.Tech, Information Technology</h3><p className="company">University Institute of Technology, RGPV</p><span className="timeline-location">Indore, India · July 2019 – June 2023</span></article>
             </div>
           </div>
