@@ -268,7 +268,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="site-footer container"><a className="footer-brand" href="#home">pramod<span>.</span></a><p>Made with intention. Built with Next.js.<br className="mobile-br" /> © {new Date().getFullYear()} Pramod Chakraworty</p><span className="footer-time"><span className="status-dot" />{time ? `${time} IST` : "INDORE, INDIA"}</span><a className="back-top" href="#home" aria-label="Back to top"><ArrowUp size={17} /></a></footer>
+      <footer className="site-footer container"><a className="footer-brand" href="#home">Pramod Chakraworty<span>.</span></a><p>Made with intention. Built with Next.js.<br className="mobile-br" /> © {new Date().getFullYear()} Pramod Chakraworty</p><span className="footer-time"><span className="status-dot" />{time ? `${time} IST` : "INDORE, INDIA"}</span><a className="back-top" href="#home" aria-label="Back to top"><ArrowUp size={17} /></a></footer>
       {project && <ProjectDialog project={project} onClose={() => setProject(null)} />}
     </>
   );
