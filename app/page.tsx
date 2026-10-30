@@ -9,7 +9,7 @@ import {
 
 type Project = {
   id: string; number: string; name: string; category: string; description: string;
-  image: string; imageAlt?: string; screenshot?: boolean; color: string; tags: string[]; platforms: string[]; highlight: string;
+  image: string; imageAlt?: string; imageFrame?: "portrait"; screenshot?: boolean; color: string; tags: string[]; platforms: string[]; highlight: string;
   summary: string; features: string[]; stack: string[];
 };
 
@@ -25,7 +25,8 @@ const projects: Project[] = [
   },
   {
     id: "livescore", number: "02", name: "LiveScorebyKickScore", category: "CLOSER TO THE GAME",
-    description: "Real-time scores. Real communities. 20K+ users.", image: "/assets/livescore.svg", color: "lavender",
+    description: "Real-time scores. Real communities. 20K+ users.", image: "/assets/kickscore.png", color: "navy",
+    imageAlt: "KickScore fantasy football screen showing a team lineup on the pitch beneath the Build Dream Team heading.", imageFrame: "portrait", screenshot: true,
     tags: ["React Native", "Expo", "Firebase"], platforms: ["mobile", "web"], highlight: "20K+ ANDROID USERS",
     summary: "A live sports and entertainment app bringing football and basketball updates, personalised feeds, and fan communities together. Built as the sole developer.",
     features: ["Shipped to 20K+ Android and 100+ iOS users, reaching the Android milestone organically with zero paid acquisition.", "Delivered real-time scores using optimised API polling and efficient Redux Toolkit state management.", "Built follow relationships, personalised feeds, and club-based communities.", "Implemented one-to-one, group, and club chat with Firebase and FCM notifications, plus Firebase Analytics and AdMob monetisation."],
@@ -42,7 +43,8 @@ const projects: Project[] = [
   },
   {
     id: "career", number: "04", name: "IIT Abu Dhabi Career Platform", category: "CONNECTING WHAT’S NEXT",
-    description: "A shared space for careers, connections, and opportunity.", image: "/assets/career.svg", color: "blue",
+    description: "A shared space for careers, connections, and opportunity.", image: "/assets/iit-abu-dhabi.png", color: "blue",
+    imageAlt: "IIT Abu Dhabi career platform showing a support profile, job links, career tools, and suggested connections.", screenshot: true,
     tags: ["Next.js", "TypeScript", "Firebase"], platforms: ["web"], highlight: "CAREERS · COMMUNITY · CONNECTIONS",
     summary: "A career and community platform connecting students, recruiters, and administrators. Contributed to the full-stack platform and its communication features.",
     features: ["Contributed to a full-stack career platform built with Next.js, React, and TypeScript.", "Implemented Firebase Realtime Database chat and FCM push notifications, sharing messaging patterns with the mobile apps.", "Integrated Firebase Auth with role-based access for students, recruiters, and admins.", "Used JWT session management to support authenticated platform experiences."],
@@ -114,6 +116,11 @@ function HeroVisual() {
   );
 }
 
+function ProjectImage({ project }: { project: Project }) {
+  const image = <img src={project.image} width="720" height="500" alt={project.imageAlt ?? `${project.name} conceptual interface illustration`} loading="lazy" />;
+  return project.imageFrame === "portrait" ? <span className="project-portrait">{image}</span> : image;
+}
+
 function ProjectDialog({ project, onClose }: { project: Project; onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -130,7 +137,7 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
     <dialog ref={dialogRef} className="project-dialog" aria-labelledby="project-title" onCancel={onClose} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="dialog-inner">
         <button ref={closeRef} className="dialog-close icon-button" onClick={onClose} aria-label="Close project details"><X size={22} /></button>
-        <div className={`dialog-image ${project.color}${project.screenshot ? " project-screenshot" : ""}`}><img src={project.image} width="720" height="500" alt={project.imageAlt ?? `${project.name} conceptual interface illustration`} /></div>
+        <div className={`dialog-image ${project.color}${project.screenshot ? " project-screenshot" : ""}`}><ProjectImage project={project} /></div>
         <div className="dialog-copy"><span className="eyebrow">PROJECT {project.number} / {project.category}</span><h2 id="project-title">{project.name}</h2><p className="dialog-summary">{project.summary}</p><h3>What I worked on</h3><ul>{project.features.map(feature => <li key={feature}><Check size={16} /><span>{feature}</span></li>)}</ul><h3>Built with</h3><div className="tags">{project.stack.map(tag => <span key={tag}>{tag}</span>)}</div>{!project.screenshot && <p className="illustration-note">Interface illustrations are conceptual; project details are based on my production work.</p>}<a className="button button-dark" href={`mailto:pramodchakraworty618@gmail.com?subject=${encodeURIComponent(`Let’s talk about ${project.name}`)}`}>Let’s talk about this project<ArrowUpRight size={17} /></a></div>
       </div>
     </dialog>
@@ -195,7 +202,7 @@ export default function Home() {
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="nav-wrap container">
-          <a className="brand" href="#home" aria-label="Pramod Chakraworty home">pramod<span className="brand-dot">.</span><span className="brand-label">DEVELOPER & BUILDER</span></a>
+          {/* <a className="brand" href="#home" aria-label="Pramod Chakraworty home">pramod<span className="brand-dot">.</span><span className="brand-label">DEVELOPER & BUILDER</span></a> */}
           <nav id="main-navigation" className={`nav-links ${menuOpen ? "nav-open" : ""}`} aria-label="Main navigation">
             {[{ id: "work", label: "Work" }, { id: "about", label: "About" }, { id: "skills", label: "Toolkit" }, { id: "experience", label: "Experience" }].map(item => <a key={item.id} className={activeSection === item.id ? "active" : ""} aria-current={activeSection === item.id ? "location" : undefined} href={`#${item.id}`} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
             <a className="mobile-contact" href="#contact" onClick={() => setMenuOpen(false)}>Let’s talk <ArrowUpRight size={16} /></a>
@@ -225,8 +232,8 @@ export default function Home() {
         <section id="work" className="work-section section-space container">
           <div className="section-heading" data-reveal><div><span className="eyebrow"><span className="tiny-dot" />SELECTED WORK / 01</span><h2>Built with care.<br /><em>Used in the real world.</em></h2></div><p>From the first line of code to the app store.<br />A few things I’ve helped bring to life.</p></div>
           <div className="work-toolbar" data-reveal><div className="project-filters" role="group" aria-label="Filter projects">{[{ id: "all", label: "All work", count: "04" }, { id: "mobile", label: "Mobile apps", count: "03" }, { id: "web", label: "Web & desktop", count: "03" }].map(item => <button key={item.id} className={filter === item.id ? "selected" : ""} onClick={() => setFilter(item.id)} aria-pressed={filter === item.id}>{item.label}<span>{item.count}</span></button>)}</div><span className="work-note"><span />SHIPPED, NOT JUST SIDE PROJECTS</span></div>
-          <div className="project-grid" aria-live="polite">{visibleProjects.map((item, index) => <article key={item.id} className="project-card" data-reveal style={{ "--reveal-delay": `${index % 2 * 90}ms` } as React.CSSProperties}><button className={`project-art ${item.color}${item.screenshot ? " project-screenshot" : ""}`} onClick={() => setProject(item)} aria-label={`Explore ${item.name}`}><span className="project-number">/{item.number}</span><span className="project-highlight">{item.highlight}</span><img src={item.image} alt={item.imageAlt ?? `${item.name} conceptual app interface`} width="720" height="500" loading="lazy" /><span className="project-view">Explore project <ArrowUpRight size={17} /></span></button><div className="project-info"><div><span className="project-category">{item.category}</span><h3><button onClick={() => setProject(item)}>{item.name}</button></h3></div><button className="project-arrow icon-button" onClick={() => setProject(item)} aria-label={`Read about ${item.name}`}><ArrowUpRight size={24} /></button></div><p className="project-description">{item.description}</p><div className="tags project-tags">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div></article>)}</div>
-          <p className="project-footnote">A selection of production work. App visuals are illustrative.</p>
+          <div className="project-grid" aria-live="polite">{visibleProjects.map((item, index) => <article key={item.id} className="project-card" data-reveal style={{ "--reveal-delay": `${index % 2 * 90}ms` } as React.CSSProperties}><button className={`project-art ${item.color}${item.screenshot ? " project-screenshot" : ""}`} onClick={() => setProject(item)} aria-label={`Explore ${item.name}`}><span className="project-number">/{item.number}</span><span className="project-highlight">{item.highlight}</span><ProjectImage project={item} /><span className="project-view">Explore project <ArrowUpRight size={17} /></span></button><div className="project-info"><div><span className="project-category">{item.category}</span><h3><button onClick={() => setProject(item)}>{item.name}</button></h3></div><button className="project-arrow icon-button" onClick={() => setProject(item)} aria-label={`Read about ${item.name}`}><ArrowUpRight size={24} /></button></div><p className="project-description">{item.description}</p><div className="tags project-tags">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div></article>)}</div>
+          <p className="project-footnote">A selection of production work.</p>
         </section>
 
         <section id="about" className="about-section">

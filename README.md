@@ -29,4 +29,4 @@ Next.js exports the website to `out/` for static hosting. Run `npm start` to pre
 - Self-hosted typography, original SVG interface illustrations, and reduced-motion support
 - Search and social metadata
 
-Edit portfolio content in `app/page.tsx` and styling in `app/globals.css`. Public assets and the résumé are in `public/`. Visualible Reader and Veels use supplied project images; the other interface visuals are conceptual illustrations.
+Edit portfolio content in `app/page.tsx` and styling in `app/globals.css`. Public assets and the résumé are in `public/`. Project cards and detail views use supplied project images. The hero interfaces are conceptual illustrations.
