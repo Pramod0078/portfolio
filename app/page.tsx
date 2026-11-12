@@ -133,6 +133,38 @@ const projects: Project[] = [
       { src: "/assets/twe-mobile-menu.png", alt: "TWE mobile navigation with career and education opportunities, pages, and groups.", caption: "Careers and community", width: 661, height: 667 },
     ],
   },
+  {
+    id: "n8n-meme",
+    number: "06",
+    name: "AI Instagram Meme Generator",
+    category: "AUTONOMOUS N8N WORKFLOW",
+    description: "Autonomous pipeline: AI meme generation, GPT-4o Vision multimodal captioning, and scheduled Instagram publishing.",
+    image: "/assets/n8n-workflow-banner.svg",
+    color: "navy",
+    imageAlt: "n8n workflow canvas showing automated pipeline nodes from Schedule Trigger to MagicHour API, GPT-4o Vision, and Instagram publisher.",
+    screenshot: false,
+    tags: ["n8n", "OpenAI GPT-4o", "MagicHour API", "Late API", "Webhooks", "JSON"],
+    platforms: ["automation", "web"],
+    highlight: "AUTONOMOUS N8N WORKFLOW",
+    links: [
+      {
+        label: "Download Workflow JSON",
+        url: "/assets/ai-instagram-meme-generator.n8n.json",
+        platform: "web",
+      },
+    ],
+    summary: "An autonomous end-to-end content automation engine built in n8n. Every 12 hours, it triggers AI meme generation via MagicHour API, validates generation completion, runs multimodal GPT-4o Vision to craft high-engagement captions and hashtags, and schedules posts directly to Instagram via Late API with error handling and webhook execution logs.",
+    detailHeading: "Workflow Architecture & Nodes",
+    features: [
+      "Configured a 12-hour recurring schedule trigger initiating zero-touch automated content runs.",
+      "Integrated MagicHour AI API via HTTP request nodes to dynamically generate niche fitness and lifestyle memes.",
+      "Implemented polling wait loops and conditional evaluation (IF node) to validate asset rendering and intercept errors.",
+      "Engineered an OpenAI GPT-4o Vision LangChain node to analyze the generated meme visual and produce high-engagement captions, viral hashtags, and CTAs.",
+      "Connected Late API for automated multi-account profile detection and scheduled Instagram posting.",
+      "Built error-handling stop routines and webhook status logging for reliable production execution."
+    ],
+    stack: ["n8n", "OpenAI GPT-4o Vision", "MagicHour API", "Late API", "LangChain Node", "REST Webhooks"],
+  },
 ];
 
 const skills = [
@@ -239,7 +271,6 @@ function HeroVisual({
       </div>
       <div className="hero-visual-stage">
       <div className="orbit orbit-one" /><div className="orbit orbit-two" />
-      <div className="art-cross cross-one">+</div><div className="art-cross cross-two">+</div>
       <div
         className="phone phone-reader"
         onClick={onOpenVisualible}
@@ -274,7 +305,7 @@ function HeroVisual({
       </div>
       <div className="float-badge platform-badge"><div className="platform-symbol"><Code2 size={17} /></div><div><strong>One codebase.</strong><span>Endless possibilities.</span></div></div>
       <div className="float-badge users-badge"><span className="badge-icon"><Sparkles size={18} /></span><div><strong>50k+</strong><span>downloads and counting</span></div><span className="mini-chart">▂▃▅▆▇</span></div>
-      <span className="art-caption">A FEW PIXELS. A LOT OF POSSIBILITY.</span>
+      <span className="art-caption">A FEW PIXELS · A LOT OF POSSIBILITY</span>
       </div>
     </div>
   );
@@ -310,11 +341,18 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
           {project.links && project.links.length > 0 && (
             <div className="project-store-section">
               <span className="store-section-label">
-                {project.links.every(l => l.platform === "web") ? "Website" : "Available on"}
+                {project.links.some(l => l.url.endsWith(".json")) ? "Workflow Blueprint" : project.links.every(l => l.platform === "web") ? "Website" : "Available on"}
               </span>
               <div className="project-store-buttons">
                 {project.links.map(link => (
-                  <a key={link.url} className="button-store" href={link.url} target="_blank" rel="noopener noreferrer">
+                  <a
+                    key={link.url}
+                    className="button-store"
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download={link.url.endsWith(".json") ? "ai-instagram-meme-generator.n8n.json" : undefined}
+                  >
                     {link.platform === "playstore" ? (
                       <svg className="store-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
                         <path d="M3.609 1.814L13.792 12 3.61 22.186a2.38 2.38 0 0 1-.61-.758V2.572c.16-.307.37-.57.61-.758zm11.24 11.24l2.585 2.585-11.9 6.87 9.315-9.455zm0-2.108L5.534 1.49l11.9 6.87-2.585 2.586zm1.48 1.48l3.41-1.97a1.63 1.63 0 0 0 0-2.822l-3.41-1.97-2.22 2.22 2.22 2.22z"/>
@@ -327,7 +365,7 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
                       <Globe2 size={20} className="store-icon" />
                     )}
                     <div className="store-btn-text">
-                      <small>{link.platform === "playstore" ? "GET IT ON" : link.platform === "appstore" ? "DOWNLOAD ON" : "VISIT"}</small>
+                      <small>{link.url.endsWith(".json") ? "DOWNLOAD BLUEPRINT" : link.platform === "playstore" ? "GET IT ON" : link.platform === "appstore" ? "DOWNLOAD ON" : "VISIT"}</small>
                       <strong>{link.label}</strong>
                     </div>
                     <ArrowUpRight size={15} className="store-btn-arrow" />
@@ -421,12 +459,65 @@ export default function Home() {
       <main id="main">
         <section id="home" className="hero container">
           <div className="hero-copy">
-            <div className="intro-label"><span className="status-dot"><span className="status-ping" /></span>HELLO, I’M PRAMOD CHAKRAWORTY</div>
-            <h1>Thoughtful code.<br />Real-world<br /><em>impact.</em></h1>
-            <p className="hero-description">I turn ideas into experiences people love.<br className="desktop-br" /> React Native & Next.js developer building for<br className="desktop-br" /> mobile, web, and everything in between.</p>
-            <div className="hero-actions"><a className="button button-dark" href="#work">Explore my work <ArrowDown size={17} /></a><a className="text-link resume-link" href="/Pramod_Chakraworty_Resume.pdf" download>Download résumé <ArrowDownToLine size={16} /></a></div>
-            <div className="hero-location"><MapPin size={14} /><span>Indore, India</span><span className="location-divider" /><span>Building beyond boundaries</span></div>
-            <div className="hero-proof" aria-label="Project impact"><div><strong>50K+</strong><span>downloads reached</span></div><div><strong>4</strong><span>app stores</span></div><div><strong>3</strong><span>mobile apps shipped</span></div></div>
+            <div className="intro-label">
+              <span className="status-dot"><span className="status-ping" /></span>
+              HELLO, I’M PRAMOD CHAKRAWORTY
+            </div>
+            <h1>
+              <span className="hero-title-line">Thoughtful code.</span>
+              <span className="hero-title-line">Real-world <em>impact.</em></span>
+            </h1>
+            <p className="hero-description">
+              I turn ideas into experiences people love. React Native &amp; Next.js developer building for mobile, web, and everything in between.
+            </p>
+            <div className="hero-actions">
+              <a className="button hero-btn-primary" href="#work">
+                Explore my work <ArrowDown size={16} />
+              </a>
+              <a className="button hero-btn-secondary" href="/Pramod_Chakraworty_Resume.pdf" download>
+                Download résumé <ArrowDownToLine size={15} />
+              </a>
+            </div>
+            <div className="hero-meta-bar">
+              <span className="hero-meta-chip">
+                <MapPin size={13} className="meta-icon" />
+                <span>Indore, India</span>
+              </span>
+              <span className="hero-meta-separator">/</span>
+              <a href="https://www.linkedin.com/in/pramodchakraworty077" target="_blank" rel="noopener noreferrer" className="hero-meta-chip hero-meta-link">
+                <Linkedin size={13} className="meta-icon" />
+                <span>LinkedIn</span>
+                <ArrowUpRight size={11} className="meta-arrow" />
+              </a>
+              <span className="hero-meta-separator">/</span>
+              <span className="hero-meta-chip hero-meta-motto">
+                <Sparkles size={12} className="meta-icon spark-icon" />
+                <span>Building beyond boundaries</span>
+              </span>
+            </div>
+            <div className="hero-proof-grid" aria-label="Key project metrics">
+              <div className="proof-metric-card">
+                <div className="metric-value-wrap">
+                  <strong className="metric-number"><CountUp value={50} suffix="K+" /></strong>
+                  <span className="metric-tag tag-emerald">Organic</span>
+                </div>
+                <span className="metric-label">Downloads reached</span>
+              </div>
+              <div className="proof-metric-card">
+                <div className="metric-value-wrap">
+                  <strong className="metric-number"><CountUp value={4} /></strong>
+                  <span className="metric-tag tag-blue">Global</span>
+                </div>
+                <span className="metric-label">App stores published</span>
+              </div>
+              <div className="proof-metric-card">
+                <div className="metric-value-wrap">
+                  <strong className="metric-number"><CountUp value={3} suffix="+" /></strong>
+                  <span className="metric-tag tag-purple">Live</span>
+                </div>
+                <span className="metric-label">Production mobile apps</span>
+              </div>
+            </div>
           </div>
           <HeroVisual
             onOpenVisualible={() => setProject(projects.find(p => p.id === "reader") || null)}
@@ -441,8 +532,8 @@ export default function Home() {
 
         <section id="work" className="work-section section-space container">
           <div className="section-heading" data-reveal><div><span className="eyebrow"><span className="tiny-dot" />SELECTED WORK / 01</span><h2>Built with care.<br /><em>Used in the real world.</em></h2></div><p>From the first line of code to the app store.<br />A few things I’ve helped bring to life.</p></div>
-          <div className="work-toolbar" data-reveal><div className="project-filters" role="group" aria-label="Filter projects">{[{ id: "all", label: "All work" }, { id: "mobile", label: "Mobile apps" }, { id: "web", label: "Web & desktop" }].map(item => <button key={item.id} className={filter === item.id ? "selected" : ""} onClick={() => setFilter(item.id)} aria-pressed={filter === item.id}>{item.label}<span>{projects.filter(project => item.id === "all" || project.platforms.includes(item.id)).length.toString().padStart(2, "0")}</span></button>)}</div><span className="work-note"><span />MOBILE · WEB · DESKTOP</span></div>
-          <div className="project-grid" aria-live="polite">{visibleProjects.map((item, index) => <article key={item.id} className="project-card" data-reveal style={{ "--reveal-delay": `${index % 2 * 90}ms` } as React.CSSProperties}><button className={`project-art ${item.color}${item.screenshot ? " project-screenshot" : ""}`} onClick={() => setProject(item)} aria-label={`Explore ${item.name}`}><span className="project-number">/{item.number}</span><span className="project-highlight">{item.highlight}</span><ProjectImage project={item} /><span className="project-view">Explore project <ArrowUpRight size={17} /></span></button><div className="project-info"><div><span className="project-category">{item.category}</span><h3><button onClick={() => setProject(item)}>{item.name}</button></h3></div><button className="project-arrow icon-button" onClick={() => setProject(item)} aria-label={`Read about ${item.name}`}><ArrowUpRight size={24} /></button></div><p className="project-description">{item.description}</p>{item.links && item.links.length > 0 && (<div className="card-store-links">{item.links.map(link => (<a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="card-store-pill" onClick={e => e.stopPropagation()} aria-label={`${link.label} for ${item.name}`}>{link.platform === "playstore" ? (<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M3.609 1.814L13.792 12 3.61 22.186a2.38 2.38 0 0 1-.61-.758V2.572c.16-.307.37-.57.61-.758zm11.24 11.24l2.585 2.585-11.9 6.87 9.315-9.455zm0-2.108L5.534 1.49l11.9 6.87-2.585 2.586zm1.48 1.48l3.41-1.97a1.63 1.63 0 0 0 0-2.822l-3.41-1.97-2.22 2.22 2.22 2.22z"/></svg>) : link.platform === "appstore" ? (<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.66 1.38-.56.65-.98 1.7-0.85 2.72 1.03.08 2.05-.53 2.59-1.23z"/></svg>) : (<Globe2 size={12} aria-hidden="true" />)}<span>{link.label}</span><ArrowUpRight size={11} /></a>))}</div>)}<div className="tags project-tags">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div></article>)}</div>
+          <div className="work-toolbar" data-reveal><div className="project-filters" role="group" aria-label="Filter projects">{[{ id: "all", label: "All work" }, { id: "mobile", label: "Mobile apps" }, { id: "web", label: "Web & desktop" }, { id: "automation", label: "AI & n8n" }].map(item => <button key={item.id} className={filter === item.id ? "selected" : ""} onClick={() => setFilter(item.id)} aria-pressed={filter === item.id}>{item.label}<span>{projects.filter(project => item.id === "all" || project.platforms.includes(item.id)).length.toString().padStart(2, "0")}</span></button>)}</div><span className="work-note"><span />MOBILE · WEB · AUTOMATION</span></div>
+          <div className="project-grid" aria-live="polite">{visibleProjects.map((item, index) => <article key={item.id} className="project-card" data-reveal style={{ "--reveal-delay": `${index % 2 * 90}ms` } as React.CSSProperties}><button className={`project-art ${item.color}${item.screenshot ? " project-screenshot" : ""}`} onClick={() => setProject(item)} aria-label={`Explore ${item.name}`}><span className="project-number">/{item.number}</span><span className="project-highlight">{item.highlight}</span><ProjectImage project={item} /><span className="project-view">Explore project <ArrowUpRight size={17} /></span></button><div className="project-info"><div><span className="project-category">{item.category}</span><h3><button onClick={() => setProject(item)}>{item.name}</button></h3></div><button className="project-arrow icon-button" onClick={() => setProject(item)} aria-label={`Read about ${item.name}`}><ArrowUpRight size={24} /></button></div><p className="project-description">{item.description}</p>{item.links && item.links.length > 0 && (<div className="card-store-links">{item.links.map(link => (<a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" download={link.url.endsWith(".json") ? "ai-instagram-meme-generator.n8n.json" : undefined} className="card-store-pill" onClick={e => e.stopPropagation()} aria-label={`${link.label} for ${item.name}`}>{link.platform === "playstore" ? (<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M3.609 1.814L13.792 12 3.61 22.186a2.38 2.38 0 0 1-.61-.758V2.572c.16-.307.37-.57.61-.758zm11.24 11.24l2.585 2.585-11.9 6.87 9.315-9.455zm0-2.108L5.534 1.49l11.9 6.87-2.585 2.586zm1.48 1.48l3.41-1.97a1.63 1.63 0 0 0 0-2.822l-3.41-1.97-2.22 2.22 2.22 2.22z"/></svg>) : link.platform === "appstore" ? (<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.66 1.38-.56.65-.98 1.7-0.85 2.72 1.03.08 2.05-.53 2.59-1.23z"/></svg>) : link.url.endsWith(".json") ? (<Workflow size={12} aria-hidden="true" />) : (<Globe2 size={12} aria-hidden="true" />)}<span>{link.label}</span><ArrowUpRight size={11} /></a>))}</div>)}<div className="tags project-tags">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div></article>)}</div>
           <p className="project-footnote">A selection of my work.</p>
         </section>
 
@@ -470,13 +561,82 @@ export default function Home() {
         </section>
 
         <section id="contact" className="contact-section container">
-          <div className="contact-top" data-reveal><span className="eyebrow"><span className="tiny-dot" />GOOD THINGS START WITH A CONVERSATION</span><span className="contact-spark" aria-hidden="true">✳</span></div>
-          <div className="contact-main" data-reveal><h2>Have something<br />in mind? <em>Let’s build it.</em></h2><a className="contact-arrow" href="mailto:pramodchakraworty618@gmail.com" aria-label="Email Pramod to start a conversation"><ArrowUpRight size={68} strokeWidth={1.2} /></a></div>
-          <div className="contact-bottom" data-reveal><div><p className="contact-description">A new idea, an interesting opportunity, or just a hello.<br />I’d love to hear from you.</p><div className="email-row"><a href="mailto:pramodchakraworty618@gmail.com">pramodchakraworty618@gmail.com</a><button className="copy-button icon-button" onClick={copyEmail} aria-label={copied ? "Email address copied" : "Copy email address"}>{copied ? <Check size={17} /> : <Copy size={17} />}</button><span className="copy-status" role="status">{copied ? "Copied!" : ""}</span></div></div><div className="contact-links"><a href="https://www.linkedin.com/in/pramodchakraworty077" target="_blank" rel="noopener noreferrer"><Linkedin size={17} />LinkedIn<ArrowUpRight size={16} /></a><a href="tel:+917987311094"><Smartphone size={17} />+91 79873 11094<ArrowUpRight size={16} /></a></div></div>
+          <div className="contact-card" data-reveal>
+            <div className="contact-header">
+              <span className="contact-status-badge">
+                <span className="status-dot"><span className="status-ping" /></span>
+                AVAILABLE FOR NEW OPPORTUNITIES
+              </span>
+              <h2>Have something in mind?<br /><em>Let’s build something great.</em></h2>
+              <p className="contact-lead">
+                Whether you have an idea for a mobile app, need Next.js or React Native expertise, or want to integrate autonomous AI workflows—my inbox is always open.
+              </p>
+            </div>
+
+            <div className="contact-grid">
+              {/* Email Tile */}
+              <div className="contact-tile contact-tile-primary">
+                <div className="contact-tile-icon"><Mail size={20} /></div>
+                <div className="contact-tile-body">
+                  <span className="contact-tile-label">DIRECT EMAIL</span>
+                  <a className="contact-tile-value" href="mailto:pramodchakraworty618@gmail.com">
+                    pramodchakraworty618@gmail.com
+                  </a>
+                </div>
+                <div className="contact-tile-actions">
+                  <button className="tile-copy-btn" onClick={copyEmail} aria-label="Copy email address">
+                    {copied ? <><Check size={13} /> Copied</> : <><Copy size={13} /> Copy</>}
+                  </button>
+                  <a className="tile-action-btn" href="mailto:pramodchakraworty618@gmail.com" aria-label="Send email">
+                    Send <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              </div>
+
+              {/* LinkedIn Tile */}
+              <a className="contact-tile" href="https://www.linkedin.com/in/pramodchakraworty077" target="_blank" rel="noopener noreferrer">
+                <div className="contact-tile-icon linkedin-icon"><Linkedin size={20} /></div>
+                <div className="contact-tile-body">
+                  <span className="contact-tile-label">LINKEDIN</span>
+                  <span className="contact-tile-value">pramodchakraworty077</span>
+                </div>
+                <span className="tile-link-arrow"><ArrowUpRight size={17} /></span>
+              </a>
+
+              {/* Phone Tile */}
+              <a className="contact-tile" href="tel:+917987311094">
+                <div className="contact-tile-icon phone-icon"><Smartphone size={20} /></div>
+                <div className="contact-tile-body">
+                  <span className="contact-tile-label">PHONE &amp; WHATSAPP</span>
+                  <span className="contact-tile-value">+91 79873 11094</span>
+                </div>
+                <span className="tile-link-arrow"><ArrowUpRight size={17} /></span>
+              </a>
+
+              {/* Resume Tile */}
+              <a className="contact-tile" href="/Pramod_Chakraworty_Resume.pdf" download>
+                <div className="contact-tile-icon resume-icon"><ArrowDownToLine size={20} /></div>
+                <div className="contact-tile-body">
+                  <span className="contact-tile-label">RÉSUMÉ</span>
+                  <span className="contact-tile-value">Download PDF</span>
+                </div>
+                <span className="tile-link-arrow"><ArrowDown size={17} /></span>
+              </a>
+            </div>
+          </div>
         </section>
       </main>
 
-      <footer className="site-footer container"><a className="footer-brand" href="#home">Pramod Chakraworty<span>.</span></a><p>Made with intention. Built with Next.js.<br className="mobile-br" /> © {new Date().getFullYear()} Pramod Chakraworty</p><span className="footer-time"><span className="status-dot" />{time ? `${time} IST` : "INDORE, INDIA"}</span><a className="back-top" href="#home" aria-label="Back to top"><ArrowUp size={17} /></a></footer>
+      <footer className="site-footer container">
+        <a className="footer-brand" href="#home">Pramod Chakraworty<span>.</span></a>
+        <p className="footer-copyright">
+          © {new Date().getFullYear()} Pramod Chakraworty · Built with intention using React &amp; Next.js
+        </p>
+        <div className="footer-right">
+          <span className="footer-time"><span className="status-dot" />{time ? `${time} IST` : "INDORE, INDIA"}</span>
+          <a className="back-top" href="#home" aria-label="Back to top"><ArrowUp size={16} /></a>
+        </div>
+      </footer>
       {project && <ProjectDialog project={project} onClose={() => setProject(null)} />}
     </>
   );

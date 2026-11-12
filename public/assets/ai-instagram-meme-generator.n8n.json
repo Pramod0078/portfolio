@@ -1,0 +1,279 @@
+{
+  "name": "🤖 AI Instagram Meme Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "9869d13c-d390-4648-805d-77d80f7130eb",
+      "name": "📅 Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [-1168, 80],
+      "typeVersion": 1.2,
+      "notes": "Runs every 12 hours - customize the interval as needed"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.magichour.ai/v1/ai-meme-generator",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_MAGICHOUR_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"name\": \"AI Generated Meme - {{ new Date().toISOString() }}\",\n  \"style\": {\n    \"topic\": \"Create funny, motivational fitness memes about gym struggles, workout wins, and healthy lifestyle humor that fitness enthusiasts will love and share\",\n    \"template\": \"Random\",\n    \"searchWeb\": true\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "d708a6e0-34d3-4560-a315-3b0519c6d638",
+      "name": "🎨 Generate Meme",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [-944, 80],
+      "typeVersion": 4.2,
+      "notes": "Creates AI-generated meme using MagicHour API"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "id": "4888b58a-8ca9-46f3-9f27-dd47a50c9579",
+      "name": "⏳ Wait for Generation",
+      "type": "n8n-nodes-base.wait",
+      "position": [-720, 80],
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "typeVersion": 1.1,
+      "notes": "Allows time for AI meme generation to complete"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.magichour.ai/v1/image-projects/{{ $('🎨 Generate Meme').item.json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_MAGICHOUR_API_KEY"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "c7782aa8-3edf-46e7-82b6-bbb40f3839c4",
+      "name": "🖼️ Get Generated Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [-480, 80],
+      "typeVersion": 4.2,
+      "notes": "Retrieves the completed meme from MagicHour API"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "image-check",
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              },
+              "leftValue": "={{ $json.downloads && $json.downloads.length > 0 }}",
+              "rightValue": true
+            },
+            {
+              "id": "8f886866-44d3-4bea-a035-5a7e2a0fb46d",
+              "leftValue": "={{ $json.downloads[0].url }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d02d32ed-c3db-4669-ac8a-8cbf3404c8d1",
+      "name": "✅ Check Image Ready",
+      "type": "n8n-nodes-base.if",
+      "position": [-432, 272],
+      "typeVersion": 2,
+      "notes": "Validates that the meme was generated successfully before proceeding"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Analyze this meme image and write a viral Instagram caption that will maximize engagement. Requirements:\n\n1. Write 1-2 sentences that are funny, relatable, and encourage interaction\n2. Include 5-8 relevant hashtags that match the meme content\n3. Add a call-to-action (like 'Tag someone who...', 'Double tap if...', or 'Comment if...')\n4. Keep the total caption under 150 characters for better mobile viewing\n5. Use emojis strategically but don't overuse them\n6. Make it shareable - something people want to repost\n\nDO NOT include quotation marks, intro text, or explanations. Write ONLY the final caption ready to post.",
+        "imageUrls": "={{ $json.downloads[0].url }}",
+        "options": {}
+      },
+      "id": "2647c8c8-fc8d-43b7-a51c-6e637d55fac4",
+      "name": "📝 Generate AI Caption",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [0, 0],
+      "typeVersion": 1.8,
+      "notes": "Creates engaging Instagram caption with hashtags using GPT-4 Vision"
+    },
+    {
+      "parameters": {
+        "url": "https://getlate.dev/api/v1/profiles",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "YOUR_LATE_API_KEY"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "c88deaa7-f74e-4d3e-b064-7118adccb0ba",
+      "name": "👤 Get Late Profiles",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [0, 160],
+      "typeVersion": 4.2,
+      "notes": "Retrieves Late account profiles"
+    },
+    {
+      "parameters": {
+        "url": "https://getlate.dev/api/v1/accounts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "profileId",
+              "value": "={{ $json.profiles[0]._id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_LATE_API_KEY"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "61524204-c52e-4420-bf52-4b16a150ead7",
+      "name": "🔗 Get Connected Accounts",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [240, 160],
+      "typeVersion": 4.2,
+      "notes": "Gets connected social media accounts from Late"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://getlate.dev/api/v1/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": \"{{ $('📝 Generate AI Caption').item.json.content }}\",\n  \"scheduledFor\": \"{{ new Date(Date.now() + 5*60*1000).toISOString() }}\",\n  \"timezone\": \"America/New_York\",\n  \"platforms\": [\n    {\n      \"platform\": \"instagram\",\n      \"accountId\": \"YOUR_INSTAGRAM_ACCOUNT_ID\"\n    }\n  ],\n  \"mediaItems\": [\n    {\n      \"type\": \"image\",\n      \"url\": \"{{ $('🖼️ Get Generated Image').item.json.downloads[0].url }}\",\n      \"altText\": \"AI-generated meme for Instagram engagement\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "55d1bc6d-af02-4b4c-8823-0c4a1a162036",
+      "name": "📱 Post to Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [480, 0],
+      "typeVersion": 4.2,
+      "notes": "Schedules the meme post to Instagram via Late API"
+    },
+    {
+      "parameters": {
+        "errorMessage": "error workflow"
+      },
+      "id": "c83895a4-6dbb-4d8e-8953-f148acc6a760",
+      "name": "❌ Handle Generation Error",
+      "type": "n8n-nodes-base.stopAndError",
+      "position": [-240, 240],
+      "typeVersion": 1,
+      "notes": "Gracefully handles cases where meme generation fails"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"workflow_run\": {\n    \"timestamp\": \"{{ new Date().toISOString() }}\",\n    \"status\": \"success\",\n    \"meme_generated\": true,\n    \"caption_created\": true,\n    \"instagram_scheduled\": true,\n    \"image_url\": \"{{ $('🖼️ Get Generated Image').item.json.downloads[0].url }}\",\n    \"caption_preview\": \"{{ $('📝 Generate AI Caption').item.json.content.substring(0, 50) }}...\",\n    \"next_run\": \"{{ new Date(Date.now() + 12*60*60*1000).toISOString() }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "7410dd70-7cff-4262-a94b-614d579d9cb5",
+      "name": "📊 Log Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [720, 0],
+      "typeVersion": 4.2,
+      "notes": "Logs successful workflow execution via webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "📅 Schedule Trigger": {
+      "main": [[{"node": "🎨 Generate Meme", "type": "main", "index": 0}]]
+    },
+    "🎨 Generate Meme": {
+      "main": [[{"node": "⏳ Wait for Generation", "type": "main", "index": 0}]]
+    },
+    "⏳ Wait for Generation": {
+      "main": [[{"node": "🖼️ Get Generated Image", "type": "main", "index": 0}]]
+    },
+    "🖼️ Get Generated Image": {
+      "main": [[{"node": "👤 Get Late Profiles", "type": "main", "index": 0}]]
+    },
+    "✅ Check Image Ready": {
+      "main": [[], [{"node": "❌ Handle Generation Error", "type": "main", "index": 0}]]
+    },
+    "👤 Get Late Profiles": {
+      "main": [[{"node": "🔗 Get Connected Accounts", "type": "main", "index": 0}]]
+    },
+    "🔗 Get Connected Accounts": {
+      "main": [[{"node": "📱 Post to Instagram", "type": "main", "index": 0}]]
+    },
+    "📱 Post to Instagram": {
+      "main": [[{"node": "📊 Log Success", "type": "main", "index": 0}]]
+    }
+  }
+}
+
