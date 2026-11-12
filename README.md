@@ -30,3 +30,4 @@ Next.js exports the website to `out/` for static hosting. Run `npm start` to pre
 - Search and social metadata
 
 Edit portfolio content in `app/page.tsx` and styling in `app/globals.css`. Public assets and the résumé are in `public/`. Project cards and detail views use supplied project images. The hero interfaces are conceptual illustrations.
+# portfolio
